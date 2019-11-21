@@ -1,0 +1,45 @@
+//open, split, name channels
+
+orgName = getTitle();
+run ("Split Channels");
+close("C3" +orgName)
+selectWindow ("C1-"+ orgName);
+
+//find somata
+
+run("Duplicate...", "title=BW");
+run("Gaussian Blur...", "sigma=5");
+setOption("ScaleConversions", true);
+run("8-bit");
+run("Auto Threshold", "method=Yen white");
+run("Duplicate...", "title=stomata");
+run("Analyze Particles...", "size=100-500 circularity=0.50-1.00 add");
+
+//find chloroplasts
+
+selectWindow ("C2-" +orgName)
+run("Gaussian Blur...", "sigma=5")
+setOption("ScaleConversions", true);
+run("8-bit");
+run("Auto Threshold", "method=Otsu white");
+
+//chloroplasts within stomata
+
+run("Duplicate...", "title=chloroplasts");
+imageCalculator("AND create", "stomata","chloroplasts");
+selectWindow("Result of stomata");
+run("Analyze Particles...", "size=10-100 circularityy=0-1.00 add");
+
+//measure DCF
+
+selectWindow ("C1-" +orgName)
+roiManager("Measure");
+saveAs("Results", "C:/Users/Confocal/Desktop/results.csv")
+
+//close down windows
+
+close("C2" +orgName)
+close("chloroplasts")
+close("BW")
+close("stomata")
+close("Result of stomata")
