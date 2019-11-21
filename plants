@@ -1,0 +1,37 @@
+//This macro is for measuring fluoresence intensity in overall stomata and only in chloroplasts
+
+//open, split, name channels
+
+orgName = getTitle();
+run ("Split Channels");
+close("C3" +orgName)
+selectWindow ("C1-"+ orgName);
+
+//find somata
+
+run("Duplicate...", "title=BW");
+run("Gaussian Blur...", "sigma=5");
+setOption("ScaleConversions", true);
+run("8-bit");
+run("Auto Threshold", "method=Yen white");
+run("Duplicate...", "title=stomata");
+run("Analyze Particles...", "size=100-500 circularity=0.50-1.00 display add")
+
+//find chloroplasts that are within stomata
+
+selectWindow ("C2-" +orgName)
+run("Duplicate...", "title=your_mama");
+run("Gaussian Blur...", "sigma=5")
+setOption("ScaleConversions", true);
+run("8-bit");
+run("Auto Threshold", "method=Otsu white");
+run("Duplicate...", "title=chloroplasts");
+imageCalculator("AND create", "stomata","chloroplasts");
+selectWindow("Result of stomata");
+run("Analyze Particles...", "size=10-100 circularityy=0-1.00 display add");
+selectWindow ("C1-" +orgName)
+roiManager("Measure");
+
+//close down windows-- optional
+close("C1" +orgName)
+close("C2" +orgName)
