@@ -1,0 +1,8 @@
+// macro to measure root hairs
+
+run("8-bit");
+run("Smooth", "stack");
+Ext.CLIJ_automaticThreshold("tt7 parafilm 6d -05.czi", "CLIJ_automaticThreshold_destination_tt7 parafilm 6d -05.czi", "Otsu");
+Ext.CLIJ_pull("CLIJ_automaticThreshold_destination_tt7 parafilm 6d -05.czi");
+run("Fill Holes")
+run("Duplicate...", "duplicate");
